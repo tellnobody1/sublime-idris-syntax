@@ -1,6 +1,6 @@
 # Idris Syntax Support for Sublime Text 3
 
-Syntax is based on [idris-sublime](https://github.com/idris-hackers/idris-sublime) plugin.s
+Syntax is based on [idris-sublime](https://github.com/idris-hackers/idris-sublime) plugin.
 
 ## Installation
 
