@@ -1,6 +1,7 @@
 %YAML 1.2
 ---
-# See http://www.sublimetext.com/docs/3/syntax.html
+# See https://www.sublimetext.com/docs/3/syntax.html
+# See https://www.sublimetext.com/docs/3/scope_naming.html
 name: Idris
 file_extensions:
   - idr
@@ -18,6 +19,16 @@ contexts:
     - include: keywords
     - include: numbers
     - include: strings
+    # - match: \?[\-\!\#\$\%\&\*\+\.\/\<\=\>\@\\\^\|\~\:]+|[\-\!\#\$\%\&\*\+\.\/\<\=\>\@\\\^\|\~\:\?][\-\!\#\$\%\&\*\+\.\/\<\=\>\@\\\^\|\~\:]*
+    #   scope: storage.type.function.idris
+    - match: \b(Type|Int|Nat|Integer|Float|Char|String|Ptr|Bits8|Bits16|Bits32|Bits64|Bool)\b
+      scope: storage.type.builtin.idris
+    - match: \(\)
+      scope: constant.language
+    # - match: (?<!\w)\'\w++(?!')
+    #   scope: variable.other.idris
+    - match: (([\w']+)|\(([|!%$+\-.,=<\/>:]+)\))\s*:(?!:)
+      scope: entity.name.function.idris
 
   keywords:
     # Keywords are if, else for and while.
@@ -25,12 +36,24 @@ contexts:
     # strings in YAML. When using single quoted strings, only single quotes
     # need to be escaped: this is done by using two single quotes next to each
     # other.
-    - match: \b(do|if|then|else|case|in)\b
+    - match: \b(if|then|else|do|let|in|codata|record|dsl)\b
       scope: keyword.control.idris
-    - match: \b(infix[lr]?|let|where|of|with)\b
+    - match: \b(impossible|case|of|total|partial|mutual|infix|infixl|infixr)\b
+      scope: keyword.control.idris
+    - match: \b(where|with|syntax|proof|postulate|using|namespace|class|instance|interface|implementation|record|rewrite)\b
+      scope: keyword.control.idris
+    - match: \b(public|private|export|implicit)\b
+      scope: keyword.control.idris
+    - match: ^(module)\b
       scope: keyword.other.idris
+    - match: \b(data)\b
+      scope: keyword.other.idris
+    - match: ^(import)\b
+      scope: keyword.control.import
 
   numbers:
+    - match: \b(S|Z)\b
+      scope: constant.numeric.idris
     - match: \b([0-9]+|0([xX][0-9a-fA-F]+|[oO][0-7]+))\b
       scope: constant.numeric.idris
     - match: \b([0-9]+\.[0-9]+([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+)\b
@@ -42,8 +65,8 @@ contexts:
       push:
         - meta_include_prototype: false
         - meta_scope: string.quoted.double.idris
-        - match: \\(NUL|SOH|STX|ETX|EOT|ENQ|ACK|BEL|BS|HT|LF|VT|FF|CR|SO|SI|DLE|DC1|DC2|DC3|DC4|NAK|SYN|ETB|CAN|EM|SUB|ESC|FS|GS|RS|US|SP|DEL|[abfnrtv\\\"'\&])
-          scope: constant.character.escape.ascii.idris
+        # - match: \\(NUL|SOH|STX|ETX|EOT|ENQ|ACK|BEL|BS|HT|LF|VT|FF|CR|SO|SI|DLE|DC1|DC2|DC3|DC4|NAK|SYN|ETB|CAN|EM|SUB|ESC|FS|GS|RS|US|SP|DEL|[abfnrtv\\\"'\&])
+        #   scope: constant.character.escape.ascii.idris
         - match: \\o[0-7]+|\\x[0-9A-Fa-f]+|\\[0-9]+
           scope: constant.character.escape.octal.idris
         - match: \^[A-Z@\[\]\\\^_]
@@ -51,27 +74,38 @@ contexts:
         - match: '"'
           scope: punctuation.definition.string.end.idris
           pop: true
-    - match: (?<!\w)\'
+      
+    - match: \'
       scope: constant.character.escape.control.idris
       push:
         - meta_include_prototype: false
         - meta_scope: string.quoted.single.idris
-        - match: \\(NUL|SOH|STX|ETX|EOT|ENQ|ACK|BEL|BS|HT|LF|VT|FF|CR|SO|SI|DLE|DC1|DC2|DC3|DC4|NAK|SYN|ETB|CAN|EM|SUB|ESC|FS|GS|RS|US|SP|DEL|[abfnrtv\\\"'\&])
-          scope: constant.character.escape.ascii.idris
+        # - match: \\(NUL|SOH|STX|ETX|EOT|ENQ|ACK|BEL|BS|HT|LF|VT|FF|CR|SO|SI|DLE|DC1|DC2|DC3|DC4|NAK|SYN|ETB|CAN|EM|SUB|ESC|FS|GS|RS|US|SP|DEL|[abfnrtv\\\"'\&])
+        #   scope: constant.character.escape.ascii.idris
         - match: \\o[0-7]+|\\x[0-9A-Fa-f]+|\\[0-9]+
           scope: constant.character.escape.octal.idris
         - match: \^[A-Z@\[\]\\\^_]
           scope: constant.character.escape.control.idris
-        - match: \n
-          scope: invalid.illegal.idris
         - match: \'
           scope: punctuation.definition.string.end.idris
           pop: true
 
   comments:
-    - match: '--'
+    - match: --
       scope: punctuation.definition.comment.idris
       push:
-        - meta_scope: comment.line.double-dash.idris
+        - meta_scope: comment.line.idris
+        - match: $\n?
+          pop: true
+    - match: '{-'
+      scope: punctuation.definition.comment.idris
+      push:
+        - meta_scope: comment.block.idris
+        - match: '-}'
+          pop: true
+    - match: \|\|\|
+      scope: punctuation.definition.comment.idris
+      push:
+        - meta_scope: comment.block.documentation.idris
         - match: $\n?
           pop: true
