@@ -135,5 +135,5 @@ contexts:
       scope: keyword.operator.arrow.idris
     - match: \s*(=>|\u21D2)\s*
       scope: keyword.operator.big-arrow.idris
-    - match: '[A-Z][\w'']*'
+    - match: '\b[A-Z][\w'']*'
       scope: entity.name.type.idris
