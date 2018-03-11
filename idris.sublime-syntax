@@ -106,7 +106,7 @@ contexts:
     - include: function_signature
 
   function_signature:
-    - match: '^(\s*)(?!--)(?:(\(\W\)|[\w'']+)|[\(\[])(?=[\w'',\s\[\]\(\)]*(?:\s*)((?::)|\u2237))'
+    - match: '^(\s*)(?!--)(?:(\(\W\)|[\w'']+)|[\(\[])(?=[\s\[\]\(\)]*(?:\s*)((?::)|\u2237))'
       captures:
         2: entity.name.function.idris
       push:
@@ -125,15 +125,15 @@ contexts:
             - match: '([a-z_][\w'']*|\(\W+\))'
               scope: entity.name.function.idris
         - include: type
+        - match: '\b[A-Z][\w'']*'
+          scope: entity.name.type.idris
 
   type:
     - match: \b(Type|Int|Nat|Integer|Float|Char|String|Ptr|Bits8|Bits16|Bits32|Bits64|Bool)\b
-      scope: storage.type.builtin.idris
+      scope: storage.type.idris
     - match: \(\)
       scope: constant.language.idris
     - match: \s*(->|\u2192)\s*
       scope: keyword.operator.arrow.idris
     - match: \s*(=>|\u21D2)\s*
       scope: keyword.operator.big-arrow.idris
-    - match: '\b[A-Z][\w'']*'
-      scope: entity.name.type.idris
